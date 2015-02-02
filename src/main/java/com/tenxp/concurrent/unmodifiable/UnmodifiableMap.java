@@ -3,6 +3,9 @@ package com.tenxp.concurrent.unmodifiable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+
+import com.tenxp.concurrent.unmodifiable.UnmodifiableSortedMap.OrignalDataPutter;
 
 public class UnmodifiableMap {
 	public static void unmodifiableMap() {
@@ -19,10 +22,34 @@ public class UnmodifiableMap {
 	      
 	      Map<Integer , String> immutablelist = Collections.unmodifiableMap(list);
 	      
+	      new Thread(new OrignalDataPutter(list)).start();
 	      new Thread(new Reader(immutablelist)).start();
 	      new Thread(new Putter(immutablelist)).start();
 	      new Thread(new Replace(immutablelist)).start();
 	      new Thread(new Remover(immutablelist)).start();
+	}
+	
+	static class OrignalDataPutter implements Runnable{
+		private Map<Integer , String> normalList;
+		public OrignalDataPutter(Map<Integer , String> normalList){
+			this.normalList = normalList;//reference copy
+		}
+		
+		public void run() {
+			try {
+				Thread.sleep(1000);//딜레이
+				this.normalList.put(6, "우구리");
+				System.out.println("item OrignalDataPutter put 6 , 우구리 ");
+				Thread.sleep(1000);//딜레이
+				this.normalList.put(5, "신군");
+				System.out.println("item OrignalDataPutter put 5 , 신군 ");
+				
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			System.out.println("item OrignalDataPutter final :: "+ this.normalList);
+		}
 	}
 	
 	static class Reader implements Runnable{
@@ -32,7 +59,15 @@ public class UnmodifiableMap {
 		}
 		
 		public void run() {
-			System.out.println("item Reader :: "+ this.immutablelist);
+			try {
+				System.out.println("item Reader before:: "+ this.immutablelist);
+				Thread.sleep(1000);//딜레이
+				System.out.println("item Reader after 1:: "+ this.immutablelist);
+				Thread.sleep(1000);//딜레이
+				System.out.println("item Reader after 2:: "+ this.immutablelist);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

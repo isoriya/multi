@@ -1,9 +1,12 @@
 package com.tenxp.concurrent.unmodifiable;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import com.tenxp.concurrent.unmodifiable.UnmodifiableSortedMap.OrignalDataPutter;
 
 
 public class UnmodifiableSet {
@@ -21,10 +24,34 @@ public class UnmodifiableSet {
 	      
 	      Set<Integer> immutablelist = Collections.unmodifiableSet(list.keySet());
 	      
+	      new Thread(new OrignalDataPutter(list.keySet())).start();
 	      new Thread(new Reader(immutablelist)).start();
 	      new Thread(new Putter(immutablelist)).start();
 	      new Thread(new Remover(immutablelist)).start();
 	}
+	
+	static class OrignalDataPutter implements Runnable{
+		private Set<Integer> normalList;
+		public OrignalDataPutter(Set<Integer> normalList){
+			this.normalList = normalList;//reference copy
+		}
+		
+		public void run() {
+			try {
+				Thread.sleep(1000);//딜레이
+				this.normalList.add(6);
+				System.out.println("item OrignalDataPutter add 6");
+				Thread.sleep(1000);//딜레이
+				this.normalList.add(5);
+				System.out.println("item OrignalDataPutter add 5");
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			System.out.println("item OrignalDataPutter final :: "+ this.normalList);
+		}
+	}
+	
 	
 	static class Reader implements Runnable{
 		private Set<Integer> immutablelist;
@@ -33,7 +60,15 @@ public class UnmodifiableSet {
 		}
 		
 		public void run() {
-			System.out.println("item Reader :: "+ this.immutablelist);
+			try {
+				System.out.println("item Reader before:: "+ this.immutablelist);
+				Thread.sleep(1000);//딜레이
+				System.out.println("item Reader after 1:: "+ this.immutablelist);
+				Thread.sleep(1000);//딜레이
+				System.out.println("item Reader after 2:: "+ this.immutablelist);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

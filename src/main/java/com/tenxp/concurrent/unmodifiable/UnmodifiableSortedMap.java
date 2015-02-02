@@ -20,7 +20,7 @@ public class UnmodifiableSortedMap {
 		  
 		SortedMap<Integer , String> immutablelist = Collections.unmodifiableSortedMap(list);
 		  
-		new Thread(new Writer(list)).start();
+		new Thread(new OrignalDataPutter(list)).start();
 		new Thread(new Reader(immutablelist)).start();
 		new Thread(new Putter(immutablelist)).start();
 		new Thread(new Replace(immutablelist)).start();
@@ -33,9 +33,9 @@ public class UnmodifiableSortedMap {
 		}
 	}
 	
-	static class Writer implements Runnable{
+	static class OrignalDataPutter implements Runnable{
 		private SortedMap<Integer , String> normalList;
-		public Writer(SortedMap<Integer , String> normalList){
+		public OrignalDataPutter(SortedMap<Integer , String> normalList){
 			this.normalList = normalList;//reference copy
 		}
 		
@@ -43,14 +43,15 @@ public class UnmodifiableSortedMap {
 			try {
 				Thread.sleep(1000);//딜레이
 				this.normalList.put(6, "우구리");
+				System.out.println("item OrignalDataPutter put 6 , 우구리 ");
 				Thread.sleep(1000);//딜레이
 				this.normalList.put(5, "신군");
-				
+				System.out.println("item OrignalDataPutter put 5 , 신군 ");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			
-			System.out.println("item Writer :: "+ this.normalList);
+			System.out.println("item OrignalDataPutter :: "+ this.normalList);
 		}
 	}
 	
