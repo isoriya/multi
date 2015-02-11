@@ -30,16 +30,21 @@ private static ExecutorService executorService;
 		executorService.shutdown();
 	}
 	
-	public static Callable<String> getWork(int i) {
-		return () -> {
-			if(i == 3) {
-				try {
-					Thread.sleep(10000);
-				} catch (Exception e) {
-					e.printStackTrace();
+	public static Callable<String> getWork(final int i) {
+		
+		return new Callable<String>() {
+			
+			public String call() throws Exception {
+				if(i == 3) {
+					try {
+						Thread.sleep(10000);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
+				return i +" success";
 			}
-			return i +" success";
-			}; 
+		};
+
 	}
 }

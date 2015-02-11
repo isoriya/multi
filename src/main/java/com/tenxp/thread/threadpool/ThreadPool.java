@@ -26,20 +26,21 @@ public class ThreadPool {
 		executorService.shutdown();
 	}
 	
-	public static Runnable getWork(int i) {
+	public static Runnable getWork(final int i) {
 		
-		return () -> {
+		return new Runnable() {
 			
-			
-			if(i == 3) {
-				try {
-					Thread.sleep(3000);
-				} catch (Exception e) {
-					e.printStackTrace();
+			public void run() {
+				if(i == 3) {
+					try {
+						Thread.sleep(3000);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
+				
+				System.out.println(i);
 			}
-			
-			System.out.println(i);
-			}; 
+		};
 	}
 }
